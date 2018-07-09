@@ -48,7 +48,7 @@ class LRUCache
 
         bool Get(K key, V& value)
         {
-            if (Map.count(value) == 0) return false;
+            if (Map.count(key) == 0) return false;
 
             assert(n>0);
 
