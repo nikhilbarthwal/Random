@@ -34,3 +34,9 @@ target/
 *.exe
 *.out
 *.app
+*.pdb
+obj/
+bin/
+target/
+
+
