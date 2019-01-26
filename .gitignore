@@ -1,6 +1,22 @@
+
+.mypy_cache/
+*.error
+__pycache__/
+.vscode
+.pydevproject
+
 target/
 .idea/
 *.iml
+.project
+.vs/
+.code/
+Debug/
+Release/
+*.user
+.cproject
+.settings
+cmake-build-debug
 
 # Prerequisites
 *.d
@@ -10,6 +26,7 @@ target/
 *.lo
 *.o
 *.obj
+*.out
 
 # Precompiled Headers
 *.gch
@@ -32,11 +49,11 @@ target/
 
 # Executables
 *.exe
-*.out
+*.exe.*
 *.app
 *.pdb
 obj/
 bin/
-target/
+*.class
 
 
