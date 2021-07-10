@@ -1,0 +1,93 @@
+### Stocks : New Design ###
+
+
+__________________________________
+
+Process { BuyList, Transactions)
+{
+
+   New Process(BuyList = Process(BuyList, [])
+
+  Process(Sell) -> State
+  {
+    (T,b) = Sell.AdjustBuys(this.BuyList)
+    Return (b, t::this.Transaction)
+  }
+}
+
+____________________
+
+
+Object  Main
+{
+
+Cash
+Dividents
+Buy
+Sell
+Grants
+
+
+  Process(fileName) -> Account
+  {
+        Parse(filename)
+        Initial = BuyList, empire Tranaction
+        Result  = List.fold ( x s -> s.ProcessSell(x)) init
+        Portfolio = Result.BuyList.Fold( x s -> x.Update(s)) (new empty Map)
+        Sales = Result.Transaction
+
+        AllEvents = Sort (Cash + Dividends + Buy + Sell)
+         History BuildHistory(All Events)
+
+        Return Account(History, Portfolio, Sales)
+
+  }
+ 
+
+  Main(InputFile, OutputFile)
+  {
+   Account = Process(Inputfile)
+   Print Account.toString() to OutputFile
+  }
+}
+
+_______________________________________
+Sell:
+
+
+Adjust(BuyList) -> Transaction, BuyList // Should throw exception if sell exceeds buy
+{
+}
+
+
+
+__________________________________
+
+Grant:
+
+Adjust(Entity, SellList) -> SellLiost
+{
+Match l with
+H::t ->
+    if (q>0) && (this.Dat < h.Dat)  && (this.sybol = h.symbol)
+    {
+        If h.quautyt > q)
+            Sell.reduce(q) :: t
+       Else
+            AdjustSell(t, q -= h.quanity)
+    } else return l
+}
+
+
+AdjustGrants(grants: List(Entity), SellListl) : SellList =
+    grants |> List.fold (x s -> adjust(x, s)) OriginalSellList
+
+___________________________________
+
+
+Entity(Quantity, Date, Symbol, Price)
+{
+Reduce(int) -> Entity
+}
+
+
