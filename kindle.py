@@ -1,0 +1,13 @@
+print('tell application "Kindle"')
+print('  delay 3')
+print('do shell script "screencapture -R675,50,615,1100 p000.jpg"')
+print('end tell')
+for i in range(180):
+    print('tell application "Kindle"')
+    print('  activate')
+    print('  tell application "System Events" to keystroke " "')
+    print('end tell')
+    print('tell application "Kindle"')
+    print('  delay 3')
+    print('do shell script "screencapture -R675,50,615,1100 p%03d.jpg"' % (i+10))
+    print('end tell')
