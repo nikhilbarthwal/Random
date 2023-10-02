@@ -1,140 +1,128 @@
 #include <iostream>
-
-#include<stdlib.h>
-#include<stdio.h>
-
-//#define DEBUG
+#include <vector>
+#include <cassert>
 
 using namespace std;
 
-int a[6]={1,9,4,3,2,7};
-int c,n = 6;	
-
-int b[6];
-
-struct tree
+class number
 {
-
-   int val;
-   struct tree* prev;
-   struct tree* next;
-   struct tree* up;
+private:
+    int n;
+public:
+    explicit number(int i) { n = i; }
+    explicit number() { n = 0; }
+    int val() { return n; }
 };
 
-void place(struct tree* r, int i)
+typedef number T;
+
+class heap
 {
-	int v = r->val;
-	if (v>i)
-	{
-#ifdef  DEBUG
-		cout<<"Prev to "<<v<<"\n";
-#endif
+private:
 
-		if (r->prev==NULL)
-		{
-			struct tree* node = (tree*) malloc(sizeof(tree));
-			node->val = i;
-			node->prev = NULL;
-			node->next = NULL;
-			node->up=r;
-			r->prev = node;
+    vector<T> v;
+    int sz = 0;
 
-#ifdef DEBUG
-			cout<<"Insert "<<i<<"\n";
-#endif
-		}
-		else
-		{
-			r= r->prev;
-			place(r,i);
-		}
-	}
-	else
-	{
-#ifdef  DEBUG
-		cout<<"Next to "<<v<<"\n";
-#endif
+    void swap(int a, int b)
+    {
+        assert ((a <= sz) && (b <= sz));
+        T t = v[sz - a];
+        v[sz - a] = v[sz - b];
+        v[sz - b] = t;
+    }
 
-		if (r->next==NULL)
-		{
-			struct tree* node = (tree*) malloc(sizeof(tree));
-			node->val = i;
-			node->prev = NULL;
-			node->next = NULL;
-			node->up=r;
-			r->next = node;
-#ifdef DEBUG
-			cout<<"Insert "<<i<<"\n";
-#endif
-		}
-		else
-		{
-			r = r->next;
-			place(r,i);
-		}
-	}
+    T pos(int i) { assert (i <= sz); return v[sz - i]; }
 
-	return;
-}
+    bool compare(int p1, int p2)
+    {
+        // For Mqx heap: >
+        // For Min heap: <
 
-int read(struct tree* r,int* a,int n0)
+        T e1 = pos(p1);
+        T e2 = pos(p2);
+
+        return e1.val() > e2.val();
+        // return e1.val() < e2.val();
+    }
+
+    void heapify(int i)
+    {
+        if (2*i > sz) return; // Left & Right does not exist
+
+        if (2*i+1 > sz) // if Right does not exist
+        {
+            if (compare(2*i-1, i-1))
+            {
+                // Swap left & root and max i heapify
+                swap(i,2*i);
+                heapify(2*i);
+            }
+            return;
+        }
+
+        if ((compare(2*i, i)) || (compare(2*i+1, i)))
+        {
+                int j = (compare(2*i, 2*i+1)) ? 2 * i : 2 * i + 1;
+                swap(i,j);
+                heapify(j);
+        }
+    }
+
+    bool check_pos(int k)
+    {
+        bool b1 = true;
+        if (2*k <= sz)
+        {
+            if (compare(2*k, k)) b1 = false;
+            b1 = check_pos(2*k);
+        }
+
+        bool b2 = true;
+        if (2*k + 1 <= sz)
+        {
+            if (compare(2*k+1, k)) b2 = false;
+            b2 = check_pos(2*k + 1);
+        }
+        return (b1 && b2);
+    }
+
+    bool check() { return (sz > 0)? check_pos(1) : true; }
+
+public:
+
+    explicit heap(int n): v(n), sz(0) { }
+
+    void insert(T x)
+    {
+        assert(sz < v.size());
+        v[sz++] = x;
+        heapify(1);
+        assert (check());
+    }
+
+    T top() { return pos(1); }
+
+    T pop()
+    {
+        T z = pos(1);
+        sz--;
+        heapify(1);
+        assert (check());
+        return z;
+    }
+
+    inline int size() { return sz; }
+};
+
+int main()
 {
-	int n1=0, n2=0, n3=0;
-	int v=r->val;
+    vector<int> A = {6, 3, 8, 9, 1, 2, 0, 4, 7, 5};
+    int size = (int) A.size();
+    heap h(size);
 
-	if (r->prev!=NULL) n1=read(r->prev,a,n0);
-	else n1=n0;
+    for(int i : A) h.insert(number(i));
+    while(h.size() > 0) cout<<h.pop().val()<<endl;
 
-	/*cout<<v<<" -  "<<n1<<"\n";*/
-	a[n1]=v;n1++;
-
-	if (r->next==NULL) return n1;
-	else n2=read(r->next,a,n1);
-	
-	return n2;
-}
-
-void read1(struct tree* r)
-{
-	int v=r->val;
-
-	if (r->prev!=NULL) read1(r->prev);
-
-	cout<<v<<"\n";
-
-	if (r->next==NULL) return;
-	else read1(r->next);
-	
-	return;
-}
-
-void sort(int* a,int n)
-{
-	struct tree* root = NULL;
-	struct tree* r;
-	if (n<2) return;
-
-	struct tree* node = (tree*) malloc(sizeof(tree));
-	node->val = a[0];
-	node->prev = NULL;
-	node->next = NULL;
-	node->up=NULL;
-	root = node;
-
-	for(int i=1;i<n;i++) place(root,a[i]);	
-	int k=read(root,a,0);
-
-	cout<<"Finally: ";
-	for(int p=0;p<n;p++) cout<<a[p]<<" ";
-	cout<<"\n";
-	
-	return;
-}
-
-int main(void)
-{
-	sort(a,n);
-	
-	return 0;
+    return 0;
 }
 
