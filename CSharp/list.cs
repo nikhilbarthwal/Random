@@ -55,7 +55,7 @@ class MyList<T>
     }
 
 
-    // When you implement IEnumerable, you must also implement IEnumerator. 
+    // When you implement IEnumerable, you must also implement IEnumerator.
     public class Enum : IEnumerator
     {
         private node current = null;
@@ -89,7 +89,7 @@ class MyList<T>
     }
 }
 
-/* When you implement IEnumerable, you must also implement IEnumerator. 
+/* When you implement IEnumerable, you must also implement IEnumerator.
 public class Enum<T> : IEnumerator<T>
 {
     private node<T> current = null;
@@ -121,13 +121,13 @@ public class Enum<T> : IEnumerator<T>
         get { return (object) current.data; }
     }
 }*/
-    
+
 
 class App
 {
     static void Main()
     {
-        
+
         MyList<string> X = new MyList<string>();
         /*Person[] peopleArray = new Person[3]
         {
