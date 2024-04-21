@@ -37,7 +37,7 @@ public class convert
                 int k = (int) s.charAt(i);
                     if (k==9)
                     {
-                        if (f.equals("Makefile")||f.endsWith(".sln")) { p+=1; S.push(tb); }
+                        if (f.equals("Makefile")||f.endsWith(".sln")||f.endsWith(".fsproj")||f.endsWith(".csproj")) { p+=1; S.push(tb); }
                         else { p+=4; S.push(sp); S.push(sp); S.push(sp); S.push(sp); }
                     }
                 else if (k==13) /* carriage return */  p++;
