@@ -48,7 +48,7 @@ struct Account
         return name + "(" + to_string(transaction) + ")";
     }
 
-    bool operator>(const Account& z)
+    bool operator<(const Account& z)
     {
         if (transaction == z.transaction) { return name < z.name; }
         return transaction > z.transaction;
@@ -56,45 +56,6 @@ struct Account
     }
 
 };
-
-/*
-
-    def print(self):
-        print("\nName: ", self.id)
-        print("Balance: ", self.balance)
-        print("Transaction: ", self.transactions)
-        print("Transfer: ")
-        for t in self.transfers:
-            print("\t", t, "-> Amount:", self.transfers[t][0], "/ Expiry", self.transfers[t][1], "/ From:", self.transfers[t][2].id)
-
-
-
-    def transfer_money(self, key: str, amount: int, source, timestamp: int):
-        if source.balance >= amount:
-            self.transfers[key] = (amount, timestamp + 86400000, source)
-            return True
-        return False
-
-
-
-    def merge(self, acc):
-        self.balance += acc.balance
-        self.transactions += acc.transactions
-        transfers = dict(self.transfers)
-        for k, v in transfers.items():
-            if v[2].id == self.id:
-                del self.transfers[k]
-
-    def substitute(self, source_account, target_account):
-        for key in self.transfers:
-            transfer = self.transfers[key]
-            stored_time = transfer[1]
-            amount = transfer[0]
-            source = transfer[2]
-            if source.id == source_account.id:
-                self.transfers[key] = (amount, stored_time, target_account)
-
-*/
 
 struct Bank
 {
@@ -104,7 +65,7 @@ struct Bank
 
     bool not_exists(const string& name)
     {
-        return accounts.find(name) != accounts.end();
+        return accounts.find(name) == accounts.end();
     }
 
     string create(const string& name)
@@ -143,28 +104,22 @@ struct Bank
             transfer.target = target;
             transfer.expiry = timestamp + 86400000;
             transfers.insert({key, transfer});
-            return "true";
+            transfer_count++;
+            return key;
         }
 
-        return "false";
+        return "";
     }
 
     string accept_transfer(const int current, const string& name, const string& key)
     {
-        if (transfers.find(key) != transfers.end()) return "false";
+        if (transfers.find(key) == transfers.end()) return "false";
         auto& transfer = transfers.at(key);
         if (current > transfer.expiry) return "false";
         accounts.at(transfer.target).deposit(transfer.amount);
         accounts.at(transfer.source).pay(transfer.amount);
         return "true";
     }
-
-/*
-    def print(self):
-        print("Transfer Count:", self.transfer_count)
-        for acc in self.accounts.values():
-            acc.print()
-*/
 
     string merge(const string& source, const string& target)
     {
@@ -185,25 +140,29 @@ struct Bank
         return "true";
     }
 
-    vector<string> top_activity()
+    vector<string> top_activity(int n = -1)
     {
-          vector<string> values;
-        for(auto & acc : accounts) values.push_back(acc.second.key());
+        vector<Account> values;
+        for(auto & acc : accounts) values.push_back(acc.second);
         sort(values.begin(), values.end());
-        return values;
+        const int m = (int) accounts.size();
+        const int l = (n == -1) ? m : min(m, n);
+        vector<string> z(l);
+        for(int i=0; i< l; i++)
+            z[i] = values[i].key();
+        return z;
     }
-
 };
 
 string join(const vector<string>& v, const string& delim, int n = -1)
 {
     string result;
-    const int m = ((int) v.size()) - 1;
-    const int l = (n == 1) ? m : max(m, n);
-    for(int i = 0; i <= l; ++i)
+    const int m = (int) v.size();
+    const int l = (n == -1) ? m : min(m, n);
+    for(int i = 0; i < l; ++i)
     {
         result += v[i];
-        if (i < l) result += delim;
+        if (i < l-1) result += delim;
     }
     return result;
 }

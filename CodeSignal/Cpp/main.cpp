@@ -1,111 +1,19 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <cassert>
 #include "solution.h"
 
 using namespace std;
 
 
-vector<vector<string>> queries =
-{
-	{"CREATE_ACCOUNT", "1", "acc0"},
-	{"CREATE_ACCOUNT", "2", "acc1"},
-	{"CREATE_ACCOUNT", "3", "acc2"},
-	{"CREATE_ACCOUNT", "4", "acc3"},
-	{"CREATE_ACCOUNT", "5", "acc4"},
-	{"CREATE_ACCOUNT", "6", "acc5"},
-	{"CREATE_ACCOUNT", "7", "acc6"},
-	{"CREATE_ACCOUNT", "8", "acc7"},
-	{"CREATE_ACCOUNT", "9", "acc8"},
-	{"CREATE_ACCOUNT", "10", "acc9"},
-	{"DEPOSIT", "11", "acc0", "7757"},
-	{"DEPOSIT", "12", "acc1", "8114"},
-	{"DEPOSIT", "13", "acc2", "6692"},
-	{"DEPOSIT", "14", "acc3", "5429"},
-	{"DEPOSIT", "15", "acc4", "7852"},
-	{"DEPOSIT", "16", "acc5", "6105"},
-	{"DEPOSIT", "17", "acc6", "5747"},
-	{"DEPOSIT", "18", "acc7", "8009"},
-	{"DEPOSIT", "19", "acc8", "5165"},
-	{"DEPOSIT", "20", "acc9", "5966"},
-	{"PAY", "21", "acc0", "344"},
-	{"PAY", "22", "acc1", "222"},
-	{"PAY", "23", "acc2", "377"},
-	{"PAY", "24", "acc3", "172"},
-	{"PAY", "25", "acc4", "251"},
-	{"PAY", "26", "acc5", "497"},
-	{"PAY", "27", "acc6", "472"},
-	{"PAY", "28", "acc7", "103"},
-	{"PAY", "29", "acc8", "171"},
-	{"PAY", "30", "acc9", "448"},
-	{"TRANSFER", "31", "acc6", "acc0", "1358"},
-	{"TRANSFER", "32", "acc0", "acc1", "1150"},
-	{"TRANSFER", "33", "acc3", "acc2", "1235"},
-	{"TRANSFER", "34", "acc0", "acc3", "1539"},
-	{"TRANSFER", "35", "acc2", "acc4", "1253"},
-	{"TRANSFER", "36", "acc2", "acc5", "1397"},
-	{"TRANSFER", "37", "acc5", "acc6", "1861"},
-	{"TRANSFER", "38", "acc2", "acc7", "1518"},
-	{"TRANSFER", "39", "acc3", "acc8", "1635"},
-	{"TRANSFER", "40", "acc1", "acc9", "1669"},
-	{"TOP_ACTIVITY", "41", "10"},
-	{"DEPOSIT", "86400041", "acc0", "506"},
-	{"DEPOSIT", "86400042", "acc1", "276"},
-	{"DEPOSIT", "86400043", "acc2", "361"},
-	{"DEPOSIT", "86400044", "acc3", "757"},
-	{"DEPOSIT", "86400045", "acc4", "129"},
-	{"DEPOSIT", "86400046", "acc5", "477"},
-	{"DEPOSIT", "86400047", "acc6", "676"},
-	{"DEPOSIT", "86400048", "acc7", "754"},
-	{"DEPOSIT", "86400049", "acc8", "873"},
-	{"DEPOSIT", "86400050", "acc9", "242"},
-	{"ACCEPT_TRANSFER", "86400051", "acc0", "transfer1"},
-	{"ACCEPT_TRANSFER", "86400052", "acc1", "transfer2"},
-	{"ACCEPT_TRANSFER", "86400053", "acc2", "transfer3"},
-	{"ACCEPT_TRANSFER", "86400054", "acc3", "transfer4"},
-	{"ACCEPT_TRANSFER", "86400055", "acc4", "transfer5"},
-	{"ACCEPT_TRANSFER", "86400056", "acc5", "transfer6"},
-	{"ACCEPT_TRANSFER", "86400057", "acc6", "transfer7"},
-	{"ACCEPT_TRANSFER", "86400058", "acc7", "transfer8"},
-	{"ACCEPT_TRANSFER", "86400059", "acc8", "transfer9"},
-	{"ACCEPT_TRANSFER", "86400060", "acc9", "transfer10"},
-	{"TOP_ACTIVITY", "86400061", "10"},
-	{"PAY", "86400062", "acc0", "348"},
-	{"PAY", "86400063", "acc1", "166"},
-	{"PAY", "86400064", "acc2", "281"},
-	{"PAY", "86400065", "acc3", "267"},
-	{"PAY", "86400066", "acc4", "421"},
-	{"PAY", "86400067", "acc5", "387"},
-	{"PAY", "86400068", "acc6", "172"},
-	{"PAY", "86400069", "acc7", "427"},
-	{"PAY", "86400070", "acc8", "481"},
-	{"PAY", "86400071", "acc9", "459"},
-	{"TRANSFER", "86400073", "acc9", "acc0", "1938"},
-	{"TRANSFER", "86400074", "acc3", "acc1", "1764"},
-	{"TRANSFER", "86400075", "acc7", "acc2", "1660"},
-	{"TRANSFER", "86400076", "acc4", "acc3", "1541"},
-	{"TRANSFER", "86400077", "acc8", "acc4", "1379"},
-	{"TRANSFER", "86400078", "acc2", "acc5", "1219"},
-	{"TRANSFER", "86400079", "acc5", "acc6", "1519"},
-	{"TRANSFER", "86400080", "acc2", "acc7", "1832"},
-	{"TRANSFER", "86400081", "acc6", "acc8", "1645"},
-	{"TRANSFER", "86400082", "acc2", "acc9", "1960"},
-	{"ACCEPT_TRANSFER", "172800083", "acc0", "transfer11"},
-	{"ACCEPT_TRANSFER", "172800084", "acc1", "transfer12"},
-	{"ACCEPT_TRANSFER", "172800085", "acc2", "transfer13"},
-	{"ACCEPT_TRANSFER", "172800086", "acc3", "transfer14"},
-	{"ACCEPT_TRANSFER", "172800087", "acc4", "transfer15"},
-	{"ACCEPT_TRANSFER", "172800088", "acc5", "transfer16"},
-	{"ACCEPT_TRANSFER", "172800089", "acc6", "transfer17"},
-	{"ACCEPT_TRANSFER", "172800090", "acc7", "transfer18"},
-	{"ACCEPT_TRANSFER", "172800091", "acc8", "transfer19"},
-	{"ACCEPT_TRANSFER", "172800092", "acc9", "transfer20"},
-	{"TOP_ACTIVITY", "172800094", "10"}
-};
+extern vector<vector<string>> queries;
+extern vector<string> result;
 
 int main() {
     auto r = solution(queries);
-    for(auto& x : r)
-        cout<<x<<endl;
+    const int l = r.size();
+    // assert(r.size() == result.size());
+    for(int i=0; i<l; ++i) if (r[i] != result[i]) cout<<i<<" -> "<<r[i]<<" [ "<<result[i]<<" ]"<<endl;
     return 0;
 }
