@@ -1,144 +1,91 @@
 import java.util.ArrayList;
-import java.util.Arrays;
-/*#include <iostream>
-#include <vector>
-#include <string>
-#include <map>
-#include <cassert>
-#include <algorithm>
+import java.util.Hashtable;
 
-using namespace std;
 
-struct Transfer
+class Transfer
 {
-    string source;
-    string target;
-    int amount;
-    int expiry;
-
-    void substitute(const string& s, const string& t)
-    {
-        if (s==target) target = t;
-    }
+    public Account source;
+    public Account target;
+    public int amount;
+    public int expiry;
 };
 
-struct Account
+class Account
 {
-    string name;
+    String name;
     int balance = 0;
     int transaction = 0;
 
-    explicit Account(const string& n): name(n) {}
+    Account(String n) { name = n; }
 
-    string deposit(int x)
+    String deposit(int x)
     {
         balance += x;
         transaction += x;
-        return to_string(balance);
+        return Integer.toString(balance);
     }
 
-    string pay(int x)
+    String pay(int x)
     {
         if (balance < x) return "";
         balance -= x;
         transaction += x;
-        return to_string(balance);
+        return Integer.toString(balance);
     }
 
-    string key()
+    String key()
     {
-        return name + "(" + to_string(transaction) + ")";
+        return name + "(" + Integer.toString(transaction) + ")";
     }
 
-    bool operator>(const Account& z)
+    boolean greater(Account z)
     {
-        if (transaction == z.transaction) { return name < z.name; }
+        if (transaction == z.transaction) { return (name.compareTo(z.name) < 0); }
         return transaction > z.transaction;
-
     }
-
 };
 
-*
-
-    def print(self):
-        print("\nName: ", self.id)
-        print("Balance: ", self.balance)
-        print("Transaction: ", self.transactions)
-        print("Transfer: ")
-        for t in self.transfers:
-            print("\t", t, "-> Amount:", self.transfers[t][0], "/ Expiry", self.transfers[t][1], "/ From:", self.transfers[t][2].id)
-
-
-
-    def transfer_money(self, key: str, amount: int, source, timestamp: int):
-        if source.balance >= amount:
-            self.transfers[key] = (amount, timestamp + 86400000, source)
-            return True
-        return False
-
-
-
-    def merge(self, acc):
-        self.balance += acc.balance
-        self.transactions += acc.transactions
-        transfers = dict(self.transfers)
-        for k, v in transfers.items():
-            if v[2].id == self.id:
-                del self.transfers[k]
-
-    def substitute(self, source_account, target_account):
-        for key in self.transfers:
-            transfer = self.transfers[key]
-            stored_time = transfer[1]
-            amount = transfer[0]
-            source = transfer[2]
-            if source.id == source_account.id:
-                self.transfers[key] = (amount, stored_time, target_account)
-
-*
-
-struct Bank
+class Bank
 {
-    map<string, Account> accounts;
-    map<string, Transfer> transfers;
+    Hashtable<String, Account> accounts;
+    Hashtable<String, Account> transfers;
     int transfer_count = 1;
 
-    bool not_exists(const string& name)
+    boolean not_exists(String name)
     {
-        return accounts.find(name) != accounts.end();
+        return (!accounts.containsKey(name));
     }
 
-    string create(const string& name)
+    String create(String name)
     {
         if (not_exists(name))
         {
-            accounts.insert({name, Account(name)});
+            accounts.put(name, new Account(name));
             return "true";
         }
         return "false";
     }
 
-    string deposit(const string& name, const int amount)
+    String deposit(String name, int amount)
     {
         if (not_exists(name)) return "";
-        return accounts.at(name).deposit(amount);
+        return accounts.get(name).deposit(amount);
     }
 
-    string pay(const string& name, const int amount)
+    String pay(String name, int amount)
     {
         if (not_exists(name)) return "";
-        return accounts.at(name).pay(amount);
+        return accounts.get(name).pay(amount);
     }
 
-    string transfer(const string& source, const string& target, const int amount, const int timestamp)
+    String transfer(String source, String target, int amount, int timestamp)
     {
         if (source == target) return "";
         if (not_exists(source)) return "";
         if (not_exists(target)) return "";
 
-        string key = "transfer" + to_string(transfer_count);
-        if (accounts.at(source).balance >= amount) {
+        String key = "transfer" + Integer.toString(transfer_count);
+        if (accounts.get(source).balance >= amount) {
             Transfer transfer;
             transfer.amount = amount;
             transfer.source = source;
