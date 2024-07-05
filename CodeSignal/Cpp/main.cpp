@@ -13,7 +13,9 @@ extern vector<string> result;
 int main() {
     auto r = solution(queries);
     const int l = r.size();
-    // assert(r.size() == result.size());
-    for(int i=0; i<l; ++i) if (r[i] != result[i]) cout<<i<<" -> "<<r[i]<<" [ "<<result[i]<<" ]"<<endl;
+    assert(r.size() == result.size());
+    for(int i=0; i<l; ++i)
+        if (r[i] != result[i])
+            cout<<i<<" -> "<<r[i]<<" [ "<<result[i]<<" ]"<<endl;
     return 0;
 }

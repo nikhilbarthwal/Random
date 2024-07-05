@@ -47,15 +47,13 @@ struct Account
     {
         return name + "(" + to_string(transaction) + ")";
     }
-
-    bool operator<(const Account& z)
-    {
-        if (transaction == z.transaction) { return name < z.name; }
-        return transaction > z.transaction;
-
-    }
-
 };
+
+bool operator<(const Account& z1, const Account& z2)
+{
+    if (z1.transaction == z2.transaction) { return z1.name < z2.name; }
+    return z1.transaction > z2.transaction;
+}
 
 struct Bank
 {
@@ -116,8 +114,10 @@ struct Bank
         if (transfers.find(key) == transfers.end()) return "false";
         auto& transfer = transfers.at(key);
         if (current > transfer.expiry) return "false";
-        accounts.at(transfer.target).deposit(transfer.amount);
-        accounts.at(transfer.source).pay(transfer.amount);
+        Account& target_account = accounts.at(transfer.target);
+        Account& source_account = accounts.at(transfer.source);
+        target_account.deposit(transfer.amount);
+        source_account.pay(transfer.amount);
         return "true";
     }
 
@@ -139,26 +139,27 @@ struct Bank
         accounts.erase(accounts.find(source));
         return "true";
     }
-
-    vector<string> top_activity(int n = -1)
-    {
-        vector<Account> values;
-        for(auto & acc : accounts) values.push_back(acc.second);
-        sort(values.begin(), values.end());
-        const int m = (int) accounts.size();
-        const int l = (n == -1) ? m : min(m, n);
-        vector<string> z(l);
-        for(int i=0; i< l; i++)
-            z[i] = values[i].key();
-        return z;
-    }
 };
 
-string join(const vector<string>& v, const string& delim, int n = -1)
+template<class K, class V>
+vector<string> top_activity(const map<K, V>&  map, int n = -1)
+{
+    vector<V> values;
+    for(auto & x : map)
+        values.push_back(x.second);
+    sort(values.begin(), values.end());
+    const int m = (int) map.size();
+    const int l = (n == -1) ? m : min(m, n);
+    vector<string> z(l);
+    for(int i=0; i< l; i++)
+        z[i] = values[i].key();
+    return z;
+}
+
+string join(const vector<string>& v, const string& delim)
 {
     string result;
-    const int m = (int) v.size();
-    const int l = (n == -1) ? m : min(m, n);
+    const int l = (int) v.size();
     for(int i = 0; i < l; ++i)
     {
         result += v[i];
@@ -169,13 +170,26 @@ string join(const vector<string>& v, const string& delim, int n = -1)
 
 string process(const vector<string>& query, Bank& bank)
 {
-    if (query[0] == "CREATE_ACCOUNT") return bank.create(query[2]);
-    if (query[0] == "DEPOSIT") return bank.deposit(query[2], stoi(query[3]));
-    if (query[0] == "PAY") return bank.pay(query[2], stoi(query[3]));
-    if (query[0] == "TRANSFER") return bank.transfer(query[2], query[3], stoi(query[4]), stoi(query[1]));
-    if (query[0] == "ACCEPT_TRANSFER") return bank.accept_transfer(stoi(query[1]), query[2], query[3]);
-    if (query[0] == "MERGE") return bank.merge(query[2], query[3]);
-    if (query[0] == "TOP_ACTIVITY") return join(bank.top_activity(), ", ", stoi(query[2]));
+    if (query[0] == "CREATE_ACCOUNT")
+        return bank.create(query[2]);
+
+    if (query[0] == "DEPOSIT")
+        return bank.deposit(query[2], stoi(query[3]));
+
+    if (query[0] == "PAY")
+        return bank.pay(query[2], stoi(query[3]));
+
+    if (query[0] == "TRANSFER")
+        return bank.transfer(query[2], query[3], stoi(query[4]), stoi(query[1]));
+
+    if (query[0] == "ACCEPT_TRANSFER")
+        return bank.accept_transfer(stoi(query[1]), query[2], query[3]);
+
+    if (query[0] == "MERGE")
+        return bank.merge(query[2], query[3]);
+
+    if (query[0] == "TOP_ACTIVITY")
+        return join(top_activity(bank.accounts, stoi(query[2])), ", ");
     return "";
 }
 
