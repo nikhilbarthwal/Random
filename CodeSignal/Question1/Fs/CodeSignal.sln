@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "CodeSignal", "CodeSignal.fsproj", "{0A3CAE19-1D0B-4976-9117-E9AF9B589D88}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0A3CAE19-1D0B-4976-9117-E9AF9B589D88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A3CAE19-1D0B-4976-9117-E9AF9B589D88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A3CAE19-1D0B-4976-9117-E9AF9B589D88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A3CAE19-1D0B-4976-9117-E9AF9B589D88}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
